@@ -19,7 +19,11 @@ const crypto = require('crypto');
 
 @Injectable()
 export class AuthService {
-    constructor(@InjectModel(User.name) private userModule:Model<User>,private mailService: MailService){}
+    constructor(
+      @InjectModel(User.name) 
+      private userModule:Model<User>,
+      private mailService: MailService
+    ){}
 
     async sendConfirmationEmail(user: any) {
       const url = `http://localhost:3000/confirm?token=${user.verificationToken}`;
@@ -58,12 +62,10 @@ export class AuthService {
                 name: data.name,
                 email: data.email,
                 password: bcrypt.hashSync(data.password),
-                verification:false,
                 verificationToken:token
               })
             ;
-
-            await this.sendConfirmationEmail(result)
+            // await this.sendConfirmationEmail(result)
 
             return {
                 code: 201,

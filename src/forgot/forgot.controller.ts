@@ -18,10 +18,10 @@ import { ApiQuery } from '@nestjs/swagger';
 export class ForgotController {
     constructor(private readonly forgotService: ForgotService) {}
 
-    @ApiQuery({ name: 'email' })
+    @ApiQuery({ name: 'name' })
     @Get('email')
-    checkEmail(@Query() args: { email: string },@Body() data:UpdateForgotDto) {
-        return this.forgotService.checkEmail(args.email,data);
+    checkEmail(@Query() args: { name: string },@Body() data:UpdateForgotDto) {
+        return this.forgotService.checkEmail(args.name,data);
     }
 
     @ApiQuery({ name: 'userId' })

@@ -7,6 +7,7 @@ import { MailService } from './mail.service';
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
+        port:587,
         secure: false,
         auth: {
           user: 'kutuzovmaksim14@gmail.com',
@@ -14,7 +15,7 @@ import { MailService } from './mail.service';
         },
       },
       defaults: {
-        from: '\"No Reply\" <noreply@example.com>',
+        from: '\"No Reply\" <kutuzovmaksim14@gmail.com>',
       },
     }),
   ],

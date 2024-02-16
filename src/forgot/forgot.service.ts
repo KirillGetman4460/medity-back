@@ -15,9 +15,9 @@ const bcrypt = require('bcryptjs');
 export class ForgotService {
     constructor(@InjectModel(User.name) private usersModule:Model<User>, @InjectModel(Forgot.name) private forgotModel:Model<Forgot>){}
 
-    async checkEmail(email: string,data: UpdateForgotDto){
+    async checkEmail(name: string,data: UpdateForgotDto){
         
-        if (!email) {
+        if (!name) {
             return {
               code: 400,
               message: 'Not all arguments',
@@ -26,7 +26,7 @@ export class ForgotService {
 
         try {
             const checkUser = await this.usersModule.findOne(
-               { email: email },
+               { name: name },
             );
             // console.log(checkUser);
             

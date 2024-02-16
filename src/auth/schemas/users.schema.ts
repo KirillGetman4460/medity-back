@@ -15,11 +15,14 @@ export class User{
     @Prop()
     password:string
 
-    @Prop()
+    @Prop({ default: false })
     verification:boolean
 
     @Prop()
     verificationToken:string
+
+    @Prop({default:""})
+    twoFactorAuthenticationSecret:string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

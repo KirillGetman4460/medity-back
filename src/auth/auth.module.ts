@@ -13,6 +13,7 @@ import { AuthService } from './auth.service';
     MailModule
   ],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService],
+  exports:[AuthService]
 })
 export class AuthModule {}

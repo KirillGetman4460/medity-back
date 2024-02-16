@@ -13,6 +13,8 @@ import {CreateAuthDto} from './dto/create-auth.dto'
 import {LoginAuthDto} from './dto/login-auth.dto'
 import {AuthService} from './auth.service'
 
+import { ApiBearerAuth, ApiHeader, ApiHeaders } from '@nestjs/swagger';
+
 import { Request } from 'express';
 
 @Controller('auth')
@@ -29,6 +31,7 @@ export class AuthController {
         return this.authService.login(data);
     }
 
+    @ApiHeaders([{ name: 'Authorization' }])
     @Post('verify')
     verifyClient(@Req() request: Request) {
       return this.authService.verify(request);

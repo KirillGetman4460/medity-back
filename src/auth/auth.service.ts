@@ -1,10 +1,11 @@
-import * as nodemailer from 'nodemailer';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {User} from './schemas/users.schema'
 import {CreateAuthDto} from './dto/create-auth.dto'
 import { LoginAuthDto } from './dto/login-auth.dto'
+
+import { MailService } from '../mail/mail.service';
 
 import { Request } from 'express';
 
@@ -18,25 +19,16 @@ const crypto = require('crypto');
 
 @Injectable()
 export class AuthService {
-    constructor(@InjectModel(User.name) private userModule:Model<User>){}
+    constructor(@InjectModel(User.name) private userModule:Model<User>,private mailService: MailService){}
 
-    async sendConfirmationEmail(user:User) {
-        const transporter = nodemailer.createTransport({
-          service: 'gmail',
-          auth: {
-            user: 'your-email@gmail.com',
-            pass: 'your-password'
-          }
-        });
-      
-        const mailOptions = {
-          from: 'your-email@gmail.com',
-          to: user.email,
-          subject: 'Подтверждение электронной почты',
-          text: `Пожалуйста, перейдите по этой ссылке, чтобы подтвердить свою электронную почту: http://your-website.com/verify/${user.verificationToken}`
-        };
-      
-        await transporter.sendMail(mailOptions);
+    async sendConfirmationEmail(user: any) {
+      const url = `http://localhost:3000/confirm?token=${user.verificationToken}`;
+      console.log(user)
+      await this.mailService.sendEmail(
+        user.email,
+        'Подтвердите свой аккаунт',
+        `Добро пожаловать, ${user.name}! Пожалуйста, подтвердите свой аккаунт, перейдя по следующей ссылке: ${url}`
+      );
     }
 
     async create(data:CreateAuthDto){
@@ -78,7 +70,7 @@ export class AuthService {
                 data: result,
             };
         } catch (err) {
-            
+          console.log(err)
             return{
                 code:500,
                 message: 'Internal server error',
@@ -143,10 +135,7 @@ export class AuthService {
               
               const checkUser = await this.userModule.findOne(
                 { userId: login.id }
-                );
-            
-              console.log(checkUser);
-              
+                );    
 
               if (checkUser) {
                 return {

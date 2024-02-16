@@ -1,20 +1,19 @@
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
-import {User} from '../auth/schemas/users.schema'
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from '../auth/schemas/users.schema';
 import * as speakeasy from 'speakeasy';
-
 
 @Injectable()
 export class GoogleAuthenticatorService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
-) {}
+  ) {}
 
   async setTwoFactorAuthenticationSecret(secret: string, userId: string) {
     const user = await this.userModel.findOne({userId:userId});
-    // user.twoFactorAuthenticationSecret = secret;
+    user.twoFactorAuthenticationSecret = secret;
     await user.save();
   }
 
@@ -38,6 +37,4 @@ export class GoogleAuthenticatorService {
       token: twoFactorAuthenticationCode,
     });
   }
-
-  
 }

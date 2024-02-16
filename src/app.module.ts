@@ -8,9 +8,10 @@ import { ForgotModule } from './forgot/forgot.module';
 import { GoogleAuthenticatorModule } from './google-authenticator/google-authenticator.module';
 import { AdminService } from './admin/admin.service';
 import { AdminModule } from './admin/admin.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb+srv://kirilldemchenko69:cohBSEyvCzbxmFKY@cluster0.szobgqx.mongodb.net/'), AuthModule, MailModule, ForgotModule, GoogleAuthenticatorModule, AdminModule],
+  imports: [MongooseModule.forRoot('mongodb+srv://kirilldemchenko69:cohBSEyvCzbxmFKY@cluster0.szobgqx.mongodb.net/'), AuthModule, MailModule, ForgotModule, GoogleAuthenticatorModule, AdminModule, PaymentModule],
   controllers: [AppController],
   providers: [AppService, AdminService],
 })

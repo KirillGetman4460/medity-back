@@ -1,5 +1,5 @@
 import { Schema,Prop,SchemaFactory } from "@nestjs/mongoose";
-
+import {Role} from '../../constants/roles'
 @Schema()
 
 export class User{
@@ -14,6 +14,9 @@ export class User{
 
     @Prop()
     password:string
+
+    @Prop({ default: Role.USER })
+    role: string;
 
     @Prop({ default: false })
     verification:boolean

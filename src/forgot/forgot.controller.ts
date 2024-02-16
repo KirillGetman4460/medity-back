@@ -11,6 +11,7 @@ import {
 import { ForgotService } from './forgot.service';
 import { CreateForgotDto } from './dto/create-forgot.dto';
 import { UpdateForgotDto } from './dto/update-forgot.dto';
+import {UpdateForgoPasswordtDto} from './dto/update-forgot-password'
 import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('forgot')
@@ -19,14 +20,14 @@ export class ForgotController {
 
     @ApiQuery({ name: 'email' })
     @Get('email')
-    checkEmail(@Query() args: { email: string }) {
-        return this.forgotService.checkEmail(args.email);
+    checkEmail(@Query() args: { email: string },@Body() data:UpdateForgotDto) {
+        return this.forgotService.checkEmail(args.email,data);
     }
 
     @ApiQuery({ name: 'userId' })
-    @ApiQuery({ name: 'password' })
+    @ApiQuery({ name: 'newPassword' })
     @Get('password')
-    resetPassword(@Query() args: { userId: string; password: string }) {
-        return this.forgotService.resetPassword(args.userId, args.password);
+    resetPassword(@Query() args: { userId: string},@Body() data:UpdateForgoPasswordtDto) {
+        return this.forgotService.resetPassword(args.userId, data.newPassword);
     }
 }

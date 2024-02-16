@@ -23,7 +23,7 @@ export class AuthService {
 
     async sendConfirmationEmail(user: any) {
       const url = `http://localhost:3000/confirm?token=${user.verificationToken}`;
-      console.log(user)
+
       await this.mailService.sendEmail(
         user.email,
         'Подтвердите свой аккаунт',

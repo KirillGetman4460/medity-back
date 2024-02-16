@@ -5,6 +5,7 @@ import {User} from '../auth/schemas/users.schema'
 import { Repository } from 'typeorm';
 import { Forgot } from './schemas/forgot.schema';
 import { InjectModel } from '@nestjs/mongoose';
+import { UpdateForgotDto } from './dto/update-forgot.dto';
 import generateTemporaryPassword from 'src/methods/generateTemporaryPassword';
 import generateRandomCode from '../methods/generateRandomCode'
 
@@ -14,7 +15,8 @@ const bcrypt = require('bcryptjs');
 export class ForgotService {
     constructor(@InjectModel(User.name) private usersModule:Model<User>, @InjectModel(Forgot.name) private forgotModel:Model<Forgot>){}
 
-    async checkEmail(email: string){
+    async checkEmail(email: string,data: UpdateForgotDto){
+        
         if (!email) {
             return {
               code: 400,
@@ -23,10 +25,11 @@ export class ForgotService {
         }
 
         try {
-            const checkUser = await this.usersModule.findOne({
-              where: { email: email },
-            });
-      
+            const checkUser = await this.usersModule.findOne(
+               { email: email },
+            );
+            // console.log(checkUser);
+            
             if (!checkUser) {
               return {
                 code: 404,
@@ -37,25 +40,26 @@ export class ForgotService {
             const checkForgot = await this.forgotModel.findOne({
               userId: checkUser.userId,
             });
-            const code = generateRandomCode();
+            
+            
             if (checkForgot) {
-              await this.forgotModel.findOneAndUpdate(
-                { userId: checkForgot.userId },
-                {
-                  code: code,
-                },
-              );
-              return {
-                code: 200,
-                message: 'ok',
-              };
+                await this.usersModule.findOneAndUpdate(
+                    { _id: checkUser._id },
+                    {
+                      email: data.newEmail,
+                    },
+                  );
+                  return {
+                    code: 200,
+                    message: 'ok',
+                  };
             } else {
-              await this.forgotModel.create({ userId: checkUser.userId, code: code });
+            //   await this.forgotModel.create({ userId: checkUser.userId, code: code });
       
-              return {
-                code: 200,
-                message: 'ok',
-              };
+            //   return {
+            //     code: 200,
+            //     message: 'ok',
+            //   };
             }
           } catch (err) {
             return {
@@ -65,8 +69,9 @@ export class ForgotService {
           }
     }
 
-    async resetPassword(userId: string, code: string) {
-        if (!userId || !code) {
+    async resetPassword(userId: string, newPassword:string) {
+
+        if (!userId || !newPassword) {
           return {
             code: 400,
             message: 'Not all arguments',
@@ -74,8 +79,8 @@ export class ForgotService {
         }
     
         try {
-          const checkForgot = await this.forgotModel.findOne({ userId: userId });
-    
+          const checkForgot = await this.usersModule.findOne({ userId: userId });
+        
           if (!checkForgot) {
             return {
               code: 404,
@@ -83,18 +88,9 @@ export class ForgotService {
             };
           }
     
-          if (checkForgot.code !== code) {
-            return {
-              code: 400,
-              message: 'code is not correct',
-            };
-          }
-    
-          const temporaryPassword = generateTemporaryPassword();
-    
           await this.usersModule.updateOne(
-            { id: userId },
-            { password: bcrypt.hashSync(temporaryPassword) },
+            { userId: userId },
+            { password: bcrypt.hashSync(newPassword) },
           );
     
           await this.forgotModel.findOneAndDelete({ _id: checkForgot._id });

@@ -11,3 +11,4 @@ import {UserSchema,User} from '../auth/schemas/users.schema'
   providers: [AdminService]
 })
 export class AdminModule {}
+                

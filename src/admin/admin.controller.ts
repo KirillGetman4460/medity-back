@@ -16,8 +16,8 @@ export class AdminController {
 
     constructor(private readonly adminService: AdminService) {}
 
-    @Post('users')
-    register(@Body() userId:string) {
-        return this.adminService.getAllUsers(userId);
-    }
+    // @Post('users')
+    // register(@Body() userId:string) {
+    //     return this.adminService.getAllUsers(userId);
+    // }
 }

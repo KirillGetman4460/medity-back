@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import {UserSchema,User} from './auth/schemas/users.schema'
 import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppService } from './app.service';
@@ -9,9 +10,19 @@ import { GoogleAuthenticatorModule } from './google-authenticator/google-authent
 import { AdminService } from './admin/admin.service';
 import { AdminModule } from './admin/admin.module';
 import { PaymentModule } from './payment/payment.module';
+import { TariffsModule } from './tariffs/tariffs.module';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb+srv://kirilldemchenko69:cohBSEyvCzbxmFKY@cluster0.szobgqx.mongodb.net/'), AuthModule, MailModule, ForgotModule, GoogleAuthenticatorModule, AdminModule, PaymentModule],
+  imports: [
+    MongooseModule.forRoot('mongodb+srv://kirilldemchenko69:cohBSEyvCzbxmFKY@cluster0.szobgqx.mongodb.net/'), 
+    AuthModule, 
+    MailModule, 
+    ForgotModule, 
+    GoogleAuthenticatorModule, 
+    AdminModule, 
+    PaymentModule, 
+    TariffsModule
+  ],
   controllers: [AppController],
   providers: [AppService, AdminService],
 })

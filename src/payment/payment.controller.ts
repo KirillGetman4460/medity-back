@@ -3,6 +3,8 @@ import {
     Post,
     Body,
     Req,
+    Param,
+    Get,
     Query
 } from '@nestjs/common';
 import { Request } from 'express';
@@ -22,9 +24,22 @@ export class PaymentController {
         return this.paymentService.createOrder(request, data);
     }
 
-    // @ApiQuery({ name: 'orderId' })
-    // @Post('accept')
-    // acceptOrder(@Query() args: { orderId: string }) {
-    //     return this.acceptOrder(args.orderId)
-    // }
+    @ApiQuery({ name: 'orderId' })
+    @Post('accept')
+    acceptOrder(@Query() args: { orderId: string }) {
+        return this.paymentService.acceptOrder(args.orderId)
+    }
+
+    @ApiQuery({ name: 'orderId' })
+  @Get('cancel')
+  cancelOrder(@Query() args: { orderId: string }) {
+    return this.paymentService.cancelOrder(args.orderId);
+  }
+
+    @ApiHeader({ name: 'Authorization' })
+  @ApiQuery({ name: 'userId' })
+  @Get('history')
+  historyOrder(@Query() args: { userId: string }, @Req() req: Request) {
+    return this.paymentService.historyOrder(args.userId, req);
+  }
 }

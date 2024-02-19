@@ -7,7 +7,6 @@ import {CreateAuthDto} from './dto/create-auth.dto'
 import { LoginAuthDto } from './dto/login-auth.dto'
 
 import { MailService } from '../mail/mail.service';
-import { TariffsService } from 'src/tariffs/tariffs.service'
 
 import { Request } from 'express';
 
@@ -69,22 +68,38 @@ export class AuthService {
               })
             ;
 
-            let tariffNames = ["Test", "Standard", "Pro"];
-            let tariffs = [];
-            
-            for(let i = 0; i < 3; i++) {
-              let tariff = {
+            const tariffs = [
+              {
                 userId: generateId, // Используйте ID нового пользователя
                 tariffId: tariffRandomId, // Используйте вашу функцию для генерации ID тарифа
-                name: tariffNames[i],
+                name: "Test",
                 interestRate: 0, 
                 term: 0,
-                minAmount: 0, 
-                maxAmount: 0, 
+                minAmount: 300, 
+                maxAmount: 500, 
                 description: "",        
-              };
-              tariffs.push(tariff);
-            }
+              },
+              {
+                userId: generateId, // Используйте ID нового пользователя
+                tariffId: tariffRandomId, // Используйте вашу функцию для генерации ID тарифа
+                name: "Standard",
+                interestRate: 0, 
+                term: 0,
+                minAmount: 1000, 
+                maxAmount: 5000, 
+                description: "",        
+              },
+              {
+                userId: generateId, // Используйте ID нового пользователя
+                tariffId: tariffRandomId, // Используйте вашу функцию для генерации ID тарифа
+                name: "Pro",
+                interestRate: 0, 
+                term: 0,
+                minAmount: 5500, 
+                maxAmount: 10000, 
+                description: "",        
+              }
+            ];
             
             await this.tariffsModel.create({
               userId: generateId,

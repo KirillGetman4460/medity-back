@@ -9,6 +9,7 @@ import getJwt from '../methods/getJwt'
 import generateId from '../methods/generateRandomId'
 import getCurrentDate from '../methods/getCurrentDate'
 import { CreatePaymentDto } from "./dto/create-payment.dto"
+import { TariffsService } from 'src/tariffs/tariffs.service';
 
 const moment = require('moment');
 @Injectable()
@@ -18,6 +19,7 @@ export class PaymentService {
         private paymentModel: Model<Payment>,
         @InjectModel(User.name) 
         private userModel:Model<User>,
+        private tariffsService:TariffsService
     ){}
 
     async createOrder(req: Request,data: CreatePaymentDto){
@@ -85,6 +87,7 @@ export class PaymentService {
         }
     }
     async acceptOrder(orderId:string){
+        
         if(!orderId){
             return {
                 code: 400,
@@ -102,15 +105,18 @@ export class PaymentService {
                   code: 404,
                   message: 'order not found',
                 };
-            }
+            }            
 
             await this.paymentModel.findOneAndUpdate(
                 {orderId:orderId},
                 {statusPayment:'accept'}
             )
 
+            await this.tariffsService.deleteTestTariff(checkOrder.userId)
+
+
             return{
-                code:201,
+                code:200,
                 message:"Order accept"
             }
         } catch (err) {
@@ -118,6 +124,98 @@ export class PaymentService {
                 code:500,
                 message: err,
             }
+        }
+    }
+    async cancelOrder(orderId:string){
+        if (!orderId) {
+            return {
+              code: 400,
+              message: 'Not all arguments',
+            };
+        }
+
+        try {
+            const checkOrder = await this.paymentModel.findOne({
+                orderId: orderId,
+                statusPayment: 'wait',
+              });
+              if (!checkOrder) {
+                return {
+                  code: 404,
+                  message: 'order not found',
+                };
+              }
+        
+              await this.paymentModel.findOneAndUpdate(
+                { orderId: orderId },
+                { statusPayment: 'cancel' },
+              );
+        
+              return {
+                code: 200,
+                message: 'ok',
+              };
+        } catch (err) {
+            return{
+                code:500,
+                message: err,
+            }
+        }
+
+    }
+    async historyOrder(userId: string, req: Request) {
+        const token = getBearerToken(req);
+    
+        if (!userId || !token) {
+          return {
+            code: 400,
+            message: 'Not all arguments',
+          };
+        }
+    
+        try {
+          const login = getJwt(token);
+    
+          if (!login) {
+            return {
+              code: 404,
+              message: 'user not found',
+            };
+          }
+    
+          const currentUser = await this.userModel.findOne({
+            userId: login.id,
+          });
+    
+          if (!currentUser) {
+            return {
+              code: 404,
+              message: 'user not found',
+            };
+          }
+    
+          if (currentUser.userId !== userId) {
+            return {
+              code: 403,
+              message: 'You do not have permission',
+            };
+          }
+    
+          const result = await this.paymentModel.find({
+            userId: userId,
+            statusPayment: 'accept',
+          });
+    
+          return {
+            code: 200,
+            data: result,
+          };
+        } catch (err) {
+          console.log(err);
+          return {
+            code: 500,
+            message: err,
+          };
         }
     }
 }

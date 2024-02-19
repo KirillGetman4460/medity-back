@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { InjectRepository } from '@nestjs/typeorm';
 import {User} from '../auth/schemas/users.schema'
-import { Repository } from 'typeorm';
 import { Forgot } from './schemas/forgot.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdateForgotDto } from './dto/update-forgot.dto';
@@ -13,7 +11,10 @@ const bcrypt = require('bcryptjs');
 
 @Injectable()
 export class ForgotService {
-    constructor(@InjectModel(User.name) private usersModule:Model<User>, @InjectModel(Forgot.name) private forgotModel:Model<Forgot>){}
+    constructor(
+      @InjectModel(User.name) private usersModule:Model<User>, 
+      @InjectModel(Forgot.name) private forgotModel:Model<Forgot>
+    ){}
 
     async checkEmail(name: string,data: UpdateForgotDto){
         
@@ -28,7 +29,6 @@ export class ForgotService {
             const checkUser = await this.usersModule.findOne(
                { name: name },
             );
-            // console.log(checkUser);
             
             if (!checkUser) {
               return {
@@ -105,5 +105,52 @@ export class ForgotService {
             message: err,
           };
         }
+    }
+
+    async createCode(userId: string, code: string){
+      if (!userId || !code) {
+        return {
+          code: 400,
+          message: 'Not all arguments',
+        };
+      }
+
+      try {
+        const checkForgot = await this.forgotModel.findOne({ userId: userId });
+
+        if (!checkForgot) {
+          return {
+            code: 404,
+            message: 'Not found',
+          };
+        }
+
+        if (checkForgot.code !== code) {
+          return {
+            code: 400,
+            message: 'code is not correct',
+          };
+        }
+
+        const temporaryPassword = generateTemporaryPassword();
+
+        await this.usersModule.findByIdAndUpdate(
+          { userId: userId },
+          { password: bcrypt.hashSync(temporaryPassword) },
+        );
+
+        await this.forgotModel.findOneAndDelete({ _id: checkForgot._id });
+
+        return {
+          code: 200,
+          message: 'ok',
+        };
+      } catch (err) {
+        return {
+          code: 500,
+          message: err,
+        };
+      }
+
     }
 }

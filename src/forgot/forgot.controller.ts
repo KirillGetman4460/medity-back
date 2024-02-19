@@ -1,10 +1,6 @@
 import { 
     Get,
-    Post,
     Body,
-    Patch,
-    Param,
-    Delete,
     Query,
     Controller } from '@nestjs/common';
 
@@ -29,5 +25,12 @@ export class ForgotController {
     @Get('password')
     resetPassword(@Query() args: { userId: string},@Body() data:UpdateForgoPasswordtDto) {
         return this.forgotService.resetPassword(args.userId, data.newPassword);
+    }
+
+    @ApiQuery({ name: 'userId' })
+    @ApiQuery({ name: 'code' })
+    @Get('code')
+    createCode(@Query() args: { userId: string; code: string }) {
+        return this.forgotService.createCode(args.userId, args.code);
     }
 }

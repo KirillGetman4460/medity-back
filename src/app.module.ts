@@ -11,6 +11,7 @@ import { AdminService } from './admin/admin.service';
 import { AdminModule } from './admin/admin.module';
 import { PaymentModule } from './payment/payment.module';
 import { TariffsModule } from './tariffs/tariffs.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { TariffsModule } from './tariffs/tariffs.module';
     GoogleAuthenticatorModule, 
     AdminModule, 
     PaymentModule, 
-    TariffsModule
+    TariffsModule, FileModule
   ],
   controllers: [AppController],
   providers: [AppService, AdminService],

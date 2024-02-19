@@ -14,7 +14,7 @@ import { AdminService } from './admin.service'
 @Controller('admin')
 export class AdminController {
 
-    constructor(private readonly adminService: AdminService) {}
+    // constructor(private readonly adminService: AdminService) {}
 
     // @Post('users')
     // register(@Body() userId:string) {

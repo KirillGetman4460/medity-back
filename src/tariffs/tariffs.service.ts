@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {User} from '../auth/schemas/users.schema'
 import { Tariff, TariffDocument } from './schemas/tariff.schema';
-import getBearerToken from '../methods/getBearerToken'
 
 import { Request } from 'express';
 
@@ -67,18 +66,18 @@ export class TariffsService {
           message: 'Not Found',
         };
       }
-
-      const filterTariffs = checkTariffs.tariffs.filter(item => String(item.name) === "Test");
-
+      
+      const filterTariffs = checkTariffs.tariffs.filter(item => String(item.name) !== "Test");
+      
       await this.tariffModel.findByIdAndUpdate(
         {userId: userId},
-        {tariffs: filterTariffs}
+        {tariffs: filterTariffs},
+        {new: true}
       );
 
       return{
         code:201,
         message: 'ok',
-
       }
 
     } catch (error) {

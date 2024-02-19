@@ -22,9 +22,8 @@ export class PaymentService {
 
     async createOrder(req: Request,data: CreatePaymentDto){
         const token = getBearerToken(req);
-        
 
-        if(!data.userId || !token){
+        if(!token){
             return {
                 code: 400,
                 message: 'Not all arguments',
@@ -43,7 +42,7 @@ export class PaymentService {
 
             const currentUser = await this.userModel.findOne({userId: login.id})
 
-            if (currentUser.userId !== data.userId) {
+            if (currentUser.userId !== login.id) {
                 return {
                   code: 403,
                   message: 'You do not have permission',
@@ -56,17 +55,18 @@ export class PaymentService {
 
             const currentTariff = data.tariff
 
+            const currentTerm = currentTariff === "Test" ? 15 : currentTariff === "Standart" ? 30 : currentTariff === "Pro" ? 90 : null
+
             const result  = await this.paymentModel.create({
                 orderId:createId,
                 userId:login.id,
                 interestRate:data.interestRate,
                 currentDate:currentDate,
                 tariff:currentTariff,
-                date:[
-                    currentTariff === "Test" ?  moment(currentDate).add(15, 'days').format('DD.MM.YYYY') : 
-                    currentTariff === "Standart" ? moment(currentDate).add(30, 'days').format('DD.MM.YYYY') :
-                    currentTariff === "Pro" ? moment(currentDate).add(90, 'days').format('DD.MM.YYYY') : null
-                ],
+                date:{
+                    startDate: currentDate,
+                    endDate: moment(currentDate, "DD.MM.YYYY").add(currentTerm, 'days').format('DD.MM.YYYY')
+                },                         
                 price:data.price,
             })
             
@@ -84,7 +84,6 @@ export class PaymentService {
             }
         }
     }
-
     async acceptOrder(orderId:string){
         if(!orderId){
             return {
@@ -110,8 +109,15 @@ export class PaymentService {
                 {statusPayment:'accept'}
             )
 
-        } catch (error) {
-            
+            return{
+                code:201,
+                message:"Order accept"
+            }
+        } catch (err) {
+            return{
+                code:500,
+                message: err,
+            }
         }
     }
 }

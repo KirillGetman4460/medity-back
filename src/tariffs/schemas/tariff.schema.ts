@@ -3,25 +3,24 @@ import { Document } from 'mongoose';
 
 export type TariffDocument = Tariff & Document;
 
+const TariffType = {
+  userId: String,
+  tariffId: String, 
+  name: String,
+  interestRate: Number, 
+  term: Number,
+  minAmount: Number, 
+  maxAmount: Number, 
+  description: String,  
+};
+
 @Schema()
 export class Tariff {
   @Prop()
-  name: string;
+  userId: string;
 
-  @Prop()
-  interestRate: number;
-
-  @Prop()
-  term: number;
-
-  @Prop()
-  minAmount: number;
-
-  @Prop()
-  maxAmount: number;
-
-  @Prop()
-  description: string;
+  @Prop([TariffType])
+  tariffs: typeof TariffType[];
 }
 
 export const TariffSchema = SchemaFactory.createForClass(Tariff);

@@ -13,6 +13,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
   ],
   controllers: [TariffsController],
+  exports:[TariffsService],
   providers: [TariffsService]
 })
 export class TariffsModule {}

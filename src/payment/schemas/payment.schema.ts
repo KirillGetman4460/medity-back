@@ -36,8 +36,8 @@ export class Payment extends Document {
   @Prop({required:true})
   interestRate:string
 
-  @Prop({ required: true, type: [DateSchema] })
-  date: DateType[];
+  @Prop({ required: true, type: DateSchema })
+  date: DateType;
 
   @Prop({required: true})
   tariff: string

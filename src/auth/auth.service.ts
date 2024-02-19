@@ -2,10 +2,12 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {User} from './schemas/users.schema'
+import {Tariff} from '../tariffs/schemas/tariff.schema'
 import {CreateAuthDto} from './dto/create-auth.dto'
 import { LoginAuthDto } from './dto/login-auth.dto'
 
 import { MailService } from '../mail/mail.service';
+import { TariffsService } from 'src/tariffs/tariffs.service'
 
 import { Request } from 'express';
 
@@ -20,9 +22,9 @@ const crypto = require('crypto');
 @Injectable()
 export class AuthService {
     constructor(
-      @InjectModel(User.name) 
-      private userModule:Model<User>,
-      private mailService: MailService
+      @InjectModel(User.name) private userModule:Model<User>,
+      @InjectModel(Tariff.name)  private tariffsModel: Model<Tariff>,
+      private mailService: MailService  
     ){}
 
     async sendConfirmationEmail(user: any) {
@@ -56,8 +58,9 @@ export class AuthService {
 
             const token = crypto.randomBytes(16).toString('hex');
             const generateId = generateRandomId();
+            const tariffRandomId = generateRandomId();
 
-            const result = await this.userModule.create({
+            await this.userModule.create({
                 userId:generateId,
                 name: data.name,
                 email: data.email,
@@ -65,11 +68,33 @@ export class AuthService {
                 verificationToken:token
               })
             ;
+
+            let tariffNames = ["Test", "Standard", "Pro"];
+            let tariffs = [];
+            
+            for(let i = 0; i < 3; i++) {
+              let tariff = {
+                userId: generateId, // Используйте ID нового пользователя
+                tariffId: tariffRandomId, // Используйте вашу функцию для генерации ID тарифа
+                name: tariffNames[i],
+                interestRate: 0, 
+                term: 0,
+                minAmount: 0, 
+                maxAmount: 0, 
+                description: "",        
+              };
+              tariffs.push(tariff);
+            }
+            
+            await this.tariffsModel.create({
+              userId: generateId,
+              tariffs: tariffs
+            });
             // await this.sendConfirmationEmail(result)
 
             return {
                 code: 201,
-                data: result,
+                message: "user create",
             };
         } catch (err) {
           console.log(err)

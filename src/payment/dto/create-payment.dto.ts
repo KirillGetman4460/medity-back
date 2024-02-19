@@ -23,7 +23,7 @@ export class CreatePaymentDto {
   interestRate:string
 
   @ApiProperty({ required: true })
-  date: DateTypes[];
+  date: DateTypes;
 
   @ApiProperty({ required: true })
   tariff:string

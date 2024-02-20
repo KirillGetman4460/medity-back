@@ -59,7 +59,7 @@ export class AuthService {
             const generateId = generateRandomId();
             const tariffRandomId = generateRandomId();
 
-            await this.userModule.create({
+            const result = await this.userModule.create({
                 userId:generateId,
                 name: data.name,
                 email: data.email,

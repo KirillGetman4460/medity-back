@@ -49,7 +49,8 @@ import {
         }),
       }),
     )
-    async uploadFile(@UploadedFile() file,@Param('userId') userId: string) {
+    async uploadFile(@UploadedFile() file,@Query('userId') userId: string) {  
+      
       try {
 
         if (file && file.filename) {

@@ -28,6 +28,9 @@ export class User extends Document {
   @Prop({ default: Role.USER })
   role: string;
 
+  @Prop({default: ''})
+  img:string
+
 //   @Prop({ type: [Tariff] })
 //   tariffs: TariffType[];
 

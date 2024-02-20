@@ -10,12 +10,12 @@ import { MailService } from './mail.service';
         port:587,
         secure: false,
         auth: {
-          user: 'kutuzovmaksim14@gmail.com',
-          pass: 'fuckyou228',
+          user: 'tt2222612@gmail.com',
+          pass: 'testTesting64',
         },
       },
       defaults: {
-        from: '\"No Reply\" <kutuzovmaksim14@gmail.com>',
+        from: '\"No Reply\" <tt2222612@gmail.com>',
       },
     }),
   ],

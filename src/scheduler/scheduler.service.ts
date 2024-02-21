@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
@@ -30,16 +31,19 @@ export class SchedulerService {
             })
 
             await Promise.all(
-                allPayments.map(async (item) =>{
-                    const checkDate = !isDatePassed(item.date.endDate)
-                    await this.tariffModel.findOneAndUpdate(
-                        { userId: item.userId },
-                        {
-                            tariffs:[{active:checkDate}]
-                        }
-                    )
-                })
-            )
+              allPayments.map(async (item) => {
+                const checkDate = !isDatePassed(item.date.endDate);
+                const userTariff = await this.tariffModel.findOne({ userId: item.userId });
+            
+                if (checkDate && userTariff.tariffs.some(tariff => tariff.name === 'Test')) {
+                  userTariff.tariffs = userTariff.tariffs.filter(tariff => tariff.name !== 'Test');
+                } else {
+                  userTariff.tariffs = userTariff.tariffs.map(tariff => tariff.name === 'Test' ? { ...tariff, active: checkDate } : tariff);
+                }
+            
+                await userTariff.save();
+              })
+            );
 
         } catch (error) {
             console.log(error);

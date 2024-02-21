@@ -1,4 +1,4 @@
-import moment from 'moment';
+const moment = require('moment');
 
 function isDatePassed(dateString: string) {
   const inputDate = moment(dateString, 'YYYY-MM-DD');

@@ -77,7 +77,8 @@ export class AuthService {
                 term: 0,
                 minAmount: 300, 
                 maxAmount: 500, 
-                description: "",        
+                description: "",
+                active:false        
               },
               {
                 userId: generateId, // Используйте ID нового пользователя
@@ -87,7 +88,8 @@ export class AuthService {
                 term: 0,
                 minAmount: 1000, 
                 maxAmount: 5000, 
-                description: "",        
+                description: "",   
+                active:false     
               },
               {
                 userId: generateId, // Используйте ID нового пользователя
@@ -97,7 +99,8 @@ export class AuthService {
                 term: 0,
                 minAmount: 5500, 
                 maxAmount: 10000, 
-                description: "",        
+                description: "",    
+                active:false    
               }
             ];
             

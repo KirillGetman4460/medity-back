@@ -13,8 +13,8 @@ import {
   import { InjectModel } from '@nestjs/mongoose';
   import { FileInterceptor } from '@nestjs/platform-express';
   import { diskStorage } from 'multer';
-  import { extname } from 'path';
-  import { createWriteStream, readFile, readFileSync } from 'fs';
+  import { extname,join } from 'path';
+  import { createWriteStream, readFile, readFileSync,existsSync,unlinkSync } from 'fs';
   import { ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
   import sizeOf from 'image-size';
   
@@ -52,20 +52,20 @@ import {
     async uploadFile(@UploadedFile() file,@Query('userId') userId: string) {  
       
       try {
-
+    
         if (file && file.filename) {
           const data = readFileSync(file.path);
           const dimensions = sizeOf(data);
-
+    
           const currentUser = await this.userModel.findOne({userId: userId})
-
+    
           if(!currentUser){
             return {
                 code: 404,
                 message: 'user not found',
             };
           }
-
+    
           if (dimensions.width && dimensions.height) {
             const writeStream = createWriteStream(`./uploads/${file.filename}`);
             writeStream.write(data);
@@ -75,7 +75,7 @@ import {
                 {userId:userId},
                 {img:`http://localhost:3000/uploads/${file.filename}`}
             )
-
+    
             return {
               code: 201,
               path: `http://localhost:3000/uploads/${file.filename}`,

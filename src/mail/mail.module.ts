@@ -6,20 +6,20 @@ import { MailService } from './mail.service';
   imports: [
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.gmail.com',
-        port:587,
+        host: '127.0.0.1',
+        port: 1025,
         secure: false,
         auth: {
-          user: 'tt2222612@gmail.com',
-          pass: 'testTesting64',
+          user: 'adminbitrockinfluencers@protonmail.com',
+          pass: 'UPy844VugztAwq2',
         },
       },
       defaults: {
-        from: '\"No Reply\" <tt2222612@gmail.com>',
+        from: '\"No Reply\" <adminbitrockinfluencers@protonmail.com>',
       },
     }),
   ],
   providers: [MailService],
-  exports: [MailService], // export for DI
+  exports: [MailService],
 })
 export class MailModule {}

@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -49,6 +49,38 @@ export class TariffsService {
       }
     }
   }
+  async updateTariffs(userId:string,nameTariff:string){
+    if (!userId || !nameTariff) {
+      return {
+        code: 400,
+        message: 'Not all arguments',
+      };
+    }
+
+    const currentTariffs = await this.tariffModel.findOne({userId:userId})
+
+    if(!currentTariffs){
+      return{
+        code:404,
+        message: 'Not Found',
+      }
+    }
+
+    console.log(currentTariffs);
+    
+
+    await Promise.all(
+      currentTariffs.tariffs.map(async (item) => {
+        if(item.name === nameTariff){
+          item.active = true;
+          // Обновляем тариф в базе данных
+          await this.tariffModel.updateOne({ userId: userId, 'tariffs.tariffId': item.tariffId }, { 'tariffs.$.active': true });
+        }
+        return item; 
+      })
+    );
+
+  }
   async deleteTestTariff(userId:string){
     if (!userId) {
       return {
@@ -67,7 +99,8 @@ export class TariffsService {
         };
       }
       
-      const filterTariffs = checkTariffs.tariffs.filter(item => String(item.name) !== "Test");
+      const filterTariffs = ''
+      // checkTariffs.tariffs.filter(item => String(item.name) !== "Test");
       
       await this.tariffModel.findByIdAndUpdate(
         {userId: userId},

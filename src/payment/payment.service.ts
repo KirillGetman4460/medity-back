@@ -71,6 +71,8 @@ export class PaymentService {
                 },                         
                 price:data.price,
             })
+
+            await this.tariffsService.updateTariffs(login.id,currentTariff)
             
             return{
                 code:201,
@@ -113,6 +115,7 @@ export class PaymentService {
             )
 
             await this.tariffsService.deleteTestTariff(checkOrder.userId)
+
 
 
             return{

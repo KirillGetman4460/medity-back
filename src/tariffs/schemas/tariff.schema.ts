@@ -33,7 +33,7 @@ export class Tariff {
   @Prop()
   userId: string;
 
-  @Prop({ type: TariffType, default: values })
+  @Prop({ type: [TariffType], default: [values] })
   tariffs: [];
 }
 

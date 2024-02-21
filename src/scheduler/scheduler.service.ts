@@ -42,8 +42,10 @@ export class SchedulerService {
             )
 
         } catch (error) {
+            console.log(error);
             
         }
         console.log('Выполняется каждый день в 00:00');
       }
+      
 }

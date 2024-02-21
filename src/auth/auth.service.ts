@@ -46,8 +46,9 @@ export class AuthService {
         try {
             
             const checkUser = await this.userModule.findOne({
-                where: { email: data.email },
+                 email: data.email
             });
+            
             if(checkUser){
                 return{
                     code:409,
@@ -59,7 +60,7 @@ export class AuthService {
             const generateId = generateRandomId();
             const tariffRandomId = generateRandomId();
 
-            const result = await this.userModule.create({
+            await this.userModule.create({
                 userId:generateId,
                 name: data.name,
                 email: data.email,

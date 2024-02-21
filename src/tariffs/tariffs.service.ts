@@ -65,21 +65,16 @@ export class TariffsService {
         message: 'Not Found',
       }
     }
-
-    console.log(currentTariffs);
     
-
     await Promise.all(
       currentTariffs.tariffs.map(async (item) => {
         if(item.name === nameTariff){
           item.active = true;
-          // Обновляем тариф в базе данных
           await this.tariffModel.updateOne({ userId: userId, 'tariffs.tariffId': item.tariffId }, { 'tariffs.$.active': true });
         }
         return item; 
       })
     );
-
   }
   async deleteTestTariff(userId:string){
     if (!userId) {

@@ -71,8 +71,6 @@ export class PaymentService {
                 },                         
                 price:data.price,
             })
-
-            await this.tariffsService.updateTariffs(login.id,currentTariff)
             
             return{
                 code:201,
@@ -113,10 +111,8 @@ export class PaymentService {
                 {orderId:orderId},
                 {statusPayment:'accept'}
             )
-
-            await this.tariffsService.deleteTestTariff(checkOrder.userId)
-
-
+            
+            await this.tariffsService.updateTariffs(checkOrder.userId,checkOrder.tariff)
 
             return{
                 code:200,

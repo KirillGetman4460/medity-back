@@ -27,7 +27,7 @@ export class AuthService {
     ){}
 
     async sendConfirmationEmail(user: any) {
-      const url = `http://localhost:3000/confirm?token=${user.verificationToken}`;
+      const url = `http://localhost:3000/auth/verification?token=${user.verificationToken}`;
 
       await this.mailService.sendEmail(
         user.email,
@@ -132,6 +132,7 @@ export class AuthService {
             };
         }
         
+        
         try {
             const checkUser = await this.userModule.findOne(
                 { email: data.email }
@@ -142,8 +143,15 @@ export class AuthService {
                     code: 404,
                     message: 'Not Found',
                 };
-            }            
-            
+            }        
+
+            if(!checkUser.verification){
+              return {
+                code: 401,
+                message: 'User not verification',
+            };
+
+            }
             if (bcrypt.compareSync(data.password, checkUser.password)) {
                 return {
                   code: 200,

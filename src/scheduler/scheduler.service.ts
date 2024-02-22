@@ -21,6 +21,7 @@ export class SchedulerService {
       private scheduleDailyTask() {
         cron.schedule('0 0 * * *', () => {
           this.dailyTask();
+          this.accrueInterest();
         });
       }
       
@@ -50,6 +51,30 @@ export class SchedulerService {
             
         }
         console.log('Выполняется каждый день в 00:00');
+      }
+      private async accrueInterest() {
+        try {
+          const allTariffs = await this.tariffModel.find({ 'tariffs.active': true });
+      
+          await Promise.all(
+            allTariffs.map(async (userTariff) => {
+
+              userTariff.tariffs = userTariff.tariffs.map(tariff => {
+                if (tariff.active) {
+                
+                  const interest = tariff.amount * tariff.interestRate / 100;
+                  tariff.amount += interest;
+      
+                }
+                return tariff;
+              });
+      
+              await userTariff.save();
+            })
+          );
+        } catch (error) {
+          console.log(error);
+        }
       }
       
 }

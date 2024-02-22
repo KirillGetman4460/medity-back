@@ -8,10 +8,12 @@ import {
     Param,
     Delete,
     Req,
+    Query,
  } from '@nestjs/common';
 import {CreateAuthDto} from './dto/create-auth.dto'
 import {LoginAuthDto} from './dto/login-auth.dto'
 import {AuthService} from './auth.service'
+import { MailService } from 'src/mail/mail.service';
 
 import { ApiBearerAuth, ApiHeader, ApiHeaders } from '@nestjs/swagger';
 
@@ -19,7 +21,10 @@ import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(
+        private readonly authService: AuthService,
+        private readonly mailService: MailService
+    ) {}
 
     @Post('register')
     register(@Body() data: CreateAuthDto) {
@@ -35,5 +40,10 @@ export class AuthController {
     @Post('verify')
     verifyClient(@Req() request: Request) {
       return this.authService.verify(request);
+    }
+
+    @Get('verification')
+    verificationUser(@Query('token') token: string) {
+      return this.mailService.verifyUser(token);
     }
 }

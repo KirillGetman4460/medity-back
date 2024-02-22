@@ -66,4 +66,48 @@ export class ProfileService {
         }
 
     }
+    async getAllUsers(userId: string, req: Request){
+        const token = getBearerToken(req);
+        if (!userId || !token) {
+            return {
+                code: 400,
+                message: 'Not all arguments',
+            };
+        }
+
+        try {
+            const login = getJwt(token);
+
+            if (!login) {
+                return {
+                    code: 404,
+                    message: 'user not found',
+                };
+            }
+
+            const currentUser = await this.userModel.findOne({
+                userId: login.id,
+            });
+
+            if (!currentUser) {
+                return {
+                  code: 404,
+                  message: 'user not found',
+                };
+            }
+
+            const users = await this.userModel.find()
+
+            return {
+                code:200,
+                users
+            }
+
+        } catch (err) {
+            return{
+                code:500,
+                message:err
+            }
+        }
+    }
 }

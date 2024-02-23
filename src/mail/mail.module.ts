@@ -8,7 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [
     MailerModule.forRoot({
       transport: {
-        host: 'smtp-mail.outlook.com',
+        host: 'smtp.gmail.com',
         port:587,
         secure: false,
         auth: {

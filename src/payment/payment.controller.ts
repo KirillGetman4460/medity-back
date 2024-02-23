@@ -36,7 +36,7 @@ export class PaymentController {
     return this.paymentService.cancelOrder(args.orderId);
   }
 
-    @ApiHeader({ name: 'Authorization' })
+  @ApiHeader({ name: 'Authorization' })
   @ApiQuery({ name: 'userId' })
   @Get('history')
   historyOrder(@Query() args: { userId: string }, @Req() req: Request) {

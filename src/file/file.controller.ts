@@ -15,9 +15,10 @@ import {
   import { diskStorage } from 'multer';
   import { extname,join } from 'path';
   import { createWriteStream, readFile, readFileSync,existsSync,unlinkSync } from 'fs';
-  import { ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
+  import { ApiBody, ApiConsumes, ApiQuery,ApiTags } from '@nestjs/swagger';
   import sizeOf from 'image-size';
   
+  @ApiTags('file upload')
   @Controller('file')
   export class FileController {
     constructor(@InjectModel(User.name) private userModel: Model<User>) {}

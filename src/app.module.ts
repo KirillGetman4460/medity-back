@@ -14,6 +14,7 @@ import { TariffsModule } from './tariffs/tariffs.module';
 import { FileModule } from './file/file.module';
 import { ProfileModule } from './profile/profile.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { SchedulerModule } from './scheduler/scheduler.module';
     GoogleAuthenticatorModule, 
     AdminModule, 
     PaymentModule, 
-    TariffsModule, FileModule, ProfileModule, SchedulerModule
+    TariffsModule, FileModule, ProfileModule, SchedulerModule, NotificationsModule
   ],
   controllers: [AppController],
   providers: [AppService, AdminService],

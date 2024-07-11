@@ -8,8 +8,7 @@ import isDatePassed from 'src/methods/isDatePassed';
 @Injectable()
 export class SchedulerService {
     constructor(
-        @InjectModel(Payment.name)
-        private paymentModel: mongoose.Model<Payment>,
+       
       ) {
         // this.scheduleDailyTask();
       }

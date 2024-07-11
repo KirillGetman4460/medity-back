@@ -2,7 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAuthDto {
   @ApiProperty({ required: true })
-  name: string;
+  firstName: string
+
+  @ApiProperty({ required: true })
+  lastName: string
 
   @ApiProperty({ required: true })
   email: string;

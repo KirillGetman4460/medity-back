@@ -13,7 +13,6 @@ import {
 import {CreateAuthDto} from './dto/create-auth.dto'
 import {LoginAuthDto} from './dto/login-auth.dto'
 import {AuthService} from './auth.service'
-import { MailService } from 'src/mail/mail.service';
 
 import { ApiBearerAuth, ApiHeader, ApiHeaders } from '@nestjs/swagger';
 
@@ -23,7 +22,6 @@ import { Request } from 'express';
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
-        private readonly mailService: MailService
     ) {}
 
     @Post('register')
@@ -42,8 +40,4 @@ export class AuthController {
       return this.authService.verify(request);
     }
 
-    @Get('verification')
-    verificationUser(@Query('token') token: string) {
-      return this.mailService.verifyUser(token);
-    }
 }

@@ -12,10 +12,10 @@ async function bootstrap() {
     prefix: '/uploads/',
   });
   const config = new DocumentBuilder()
-    .setTitle('BitRock Tehcnology')
-    .setDescription('The BitRock Tehcnology API description')
+    .setTitle('Medity API')
+    .setDescription('The Medity API description')
     .setVersion('1.0')
-    .addTag('BitRock Tehcnology')
+    .addTag('Medity')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

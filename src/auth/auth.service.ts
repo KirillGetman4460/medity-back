@@ -2,11 +2,8 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {User} from './schemas/users.schema'
-import {Tariff} from '../tariffs/schemas/tariff.schema'
 import {CreateAuthDto} from './dto/create-auth.dto'
 import { LoginAuthDto } from './dto/login-auth.dto'
-
-import { MailService } from '../mail/mail.service';
 
 import { Request } from 'express';
 
@@ -15,29 +12,16 @@ import getBearerToken from '../methods/getBearerToken'
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const crypto = require('crypto');
 
 
 @Injectable()
 export class AuthService {
     constructor(
-      @InjectModel(User.name) private userModule:Model<User>,
-      @InjectModel(Tariff.name)  private tariffsModel: Model<Tariff>,
-      private mailService: MailService  
+      @InjectModel(User.name) private userModule:Model<User>, 
     ){}
 
-    async sendConfirmationEmail(user: any) {
-      const url = `http://localhost:3000/auth/verification?token=${user.verificationToken}`;
-
-      await this.mailService.sendEmail(
-        user.email,
-        'Подтвердите свой аккаунт',
-        `Добро пожаловать, ${user.name}! Пожалуйста, подтвердите свой аккаунт, перейдя по следующей ссылке: ${url}`
-      );
-    }
-
     async create(data:CreateAuthDto){
-        if (!data.email || !data.name || !data.password) {
+        if (!data.firstName || !data.lastName || !data.password) {
             return {
               code: 400,
               message: 'Not all arguments',
@@ -46,7 +30,7 @@ export class AuthService {
         try {
             
             const checkUser = await this.userModule.findOne({
-                 email: data.email
+              firstName: data.firstName
             });
             
             if(checkUser){
@@ -55,63 +39,16 @@ export class AuthService {
                     message: 'This user already exists',
                 }
             }
-
-            const token = crypto.randomBytes(16).toString('hex');
             const generateId = generateRandomId();
-            const tariffRandomId = generateRandomId();
 
-
-            const result = await this.userModule.create({
+            await this.userModule.create({
                 userId:generateId,
-                name: data.name,
-                email: data.email,
+                firstName: data.firstName,
+                lastName: data.lastName,
                 password: bcrypt.hashSync(data.password),
-                verificationToken:token
               })
             ;
-
-            const tariffs = [
-              {
-                userId: generateId, // Используйте ID нового пользователя
-                tariffId: tariffRandomId, // Используйте вашу функцию для генерации ID тарифа
-                name: "Test",
-                interestRate: 0, 
-                term: 0,
-                minAmount: 300, 
-                maxAmount: 500, 
-                description: "",
-                active:false        
-              },
-              {
-                userId: generateId, // Используйте ID нового пользователя
-                tariffId: tariffRandomId, // Используйте вашу функцию для генерации ID тарифа
-                name: "Standard",
-                interestRate: 0, 
-                term: 0,
-                minAmount: 1000, 
-                maxAmount: 5000, 
-                description: "",   
-                active:false     
-              },
-              {
-                userId: generateId, // Используйте ID нового пользователя
-                tariffId: tariffRandomId, // Используйте вашу функцию для генерации ID тарифа
-                name: "Pro",
-                interestRate: 0, 
-                term: 0,
-                minAmount: 5500, 
-                maxAmount: 10000, 
-                description: "",    
-                active:false    
-              }
-            ];
             
-            await this.tariffsModel.create({
-              userId: generateId,
-              tariffs: tariffs
-            });
-            
-            await this.sendConfirmationEmail(result)
             return {
                 code: 201,
                 message: "user create",
@@ -126,7 +63,7 @@ export class AuthService {
     }
     async login(data:LoginAuthDto){
         
-        if (!data.email || !data.password) {
+        if (!data.firstName || !data.password) {
             return {
               code: 400,
               message: 'Not all arguments',
@@ -136,7 +73,7 @@ export class AuthService {
         
         try {
             const checkUser = await this.userModule.findOne(
-                { email: data.email }
+                { firstName: data.firstName }
             );
             
             if(!checkUser){
@@ -146,13 +83,6 @@ export class AuthService {
                 };
             }        
 
-            if(!checkUser.verification){
-              return {
-                code: 401,
-                message: 'User not verification',
-            };
-
-            }
             if (bcrypt.compareSync(data.password, checkUser.password)) {
                 return {
                   code: 200,

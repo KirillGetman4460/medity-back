@@ -1,23 +1,15 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Tariff } from '../../tariffs/schemas/tariff.schema';
-import { Role } from '../../constants/roles';
-
-export type TariffType = {
-    name:String,
-    term:String,
-    price:String,
-    startDate: string;
-    endDate: string;
-};
-
 @Schema()
 export class User extends Document {
   @Prop({ required: true })
   userId: string;
 
-  @Prop()
-  name: string;
+  @Prop({default: ''})
+  firstName: string
+
+  @Prop({default: ''})
+  lastName: string
 
   @Prop()
   email: string;
@@ -25,23 +17,8 @@ export class User extends Document {
   @Prop()
   password: string;
 
-  @Prop({ default: Role.USER })
-  role: string;
-
   @Prop({default: ''})
-  img:string
-
-//   @Prop({ type: [Tariff] })
-//   tariffs: TariffType[];
-
-  @Prop({ default: false })
-  verification: boolean;
-
-  @Prop()
-  verificationToken: string;
-
-  @Prop({ default: "" })
-  twoFactorAuthenticationSecret: string;
+  dateBirthday: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -23,10 +23,10 @@ export class ProfileController {
         return this.profileService.getDataProfile(args.userId, req);
     }
 
-    @ApiHeader({ name: 'Authorization' })
-    @ApiQuery({ name: 'userId' })
-    @Get('all')
-    getAllusers(@Query() args: { userId: string }, @Req() req: Request) {
-        return this.profileService.getAllUsers(args.userId, req);
-    }
+    // @ApiHeader({ name: 'Authorization' })
+    // @ApiQuery({ name: 'userId' })
+    // @Get('all')
+    // getAllusers(@Query() args: { userId: string }, @Req() req: Request) {
+    //     return this.profileService.getAllUsers(args.userId, req);
+    // }
 }

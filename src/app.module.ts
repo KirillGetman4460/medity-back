@@ -15,6 +15,10 @@ import { FileModule } from './file/file.module';
 import { ProfileModule } from './profile/profile.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { MeditationService } from './meditation/meditation.service';
+import { MeditationController } from './meditation/meditation.controller';
+import { MeditationModule } from './meditation/meditation.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -25,9 +29,9 @@ import { NotificationsModule } from './notifications/notifications.module';
     GoogleAuthenticatorModule, 
     AdminModule, 
     PaymentModule, 
-    TariffsModule, FileModule, ProfileModule, SchedulerModule, NotificationsModule
+    TariffsModule, FileModule, ProfileModule, SchedulerModule, NotificationsModule, MeditationModule, CategoriesModule
   ],
-  controllers: [AppController],
-  providers: [AppService, AdminService],
+  controllers: [AppController, MeditationController],
+  providers: [AppService, AdminService, MeditationService],
 })
 export class AppModule {}

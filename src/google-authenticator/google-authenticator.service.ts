@@ -11,18 +11,18 @@ export class GoogleAuthenticatorService {
     private userModel: Model<User>,
   ) {}
 
-  async setTwoFactorAuthenticationSecret(secret: string, userId: string) {
-    const user = await this.userModel.findOne({userId:userId});
-    user.twoFactorAuthenticationSecret = secret;
-    await user.save();
-  }
+  // async setTwoFactorAuthenticationSecret(secret: string, userId: string) {
+  //   const user = await this.userModel.findOne({userId:userId});
+  //   user.twoFactorAuthenticationSecret = secret;
+  //   await user.save();
+  // }
 
   async generateTwoFactorAuthenticationSecret(user) {
     const secret = speakeasy.generateSecret({
       name: `Your App (${user.email})`,
     });
 
-    await this.setTwoFactorAuthenticationSecret(secret.base32, user.id);
+    // await this.setTwoFactorAuthenticationSecret(secret.base32, user.id);
 
     return {
       otpauthUrl: secret.otpauth_url,
